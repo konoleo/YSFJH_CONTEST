@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>漢字テスト</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<!-- <script src="test.js"></script> -->
+	<!-- <link rel="stylesheet" media="all" href="test.min.css"> -->
+	<meta name="robots" content="noindex">
+</head>
+<body>
+	<h2>4問漢字テスト</h2>
+	<template id="questionTemp">
+		<div class="questionDiv">
+			<span class="count"></span>
+			<div class="sentence"></div>
+		</div>
+	</template>
+	<section class="questions">
+	</section>
+</body>
+<style>
+	body{font-family:"YuKyo-Medium", sans-serif}.questions{display:flex;flex-wrap:wrap;flex-direction:row-reverse;align-items:flex-start;counter-reset:questions}.questionDiv{writing-mode:vertical-rl;min-height:200px;margin:0 20px 30px;display:grid;grid-template-rows:1.7rem 3rem;grid-template-columns:2rem 1fr}.count{display:block;writing-mode:horizontal-tb;text-align:center;grid-row:2;grid-column:1}.count::before{display:inline-block;counter-increment:questions;content:counter(questions);width:1rem;height:1rem;border-radius:50%;font-size:0.9rem;line-height:1rem;text-align:center;writing-mode:horizontal-tb;border:1px solid black}.sentence{grid-column:2}.blank{width:3rem;border:1px solid black}.okurigana .sentence{grid-row:1;margin-top:2px}.okurigana .yomigana{text-decoration:underline}.okurigana .yomigana _::-webkit-full-page-media,.okurigana .yomigana _:future,:root .okurigana .yomigana{text-decoration:overline}.okurigana .blank{grid-row:2;grid-column:2;height:100%;margin-top:2px}.tango .sentence{grid-row:2}.tango .blank{position:relative;display:inline-block;height:3rem;margin:2px 0}.tango .blank .yomigana{position:absolute;right:-1.5rem;text-align:center;height:100%}
+</style>
+<script>
+const kanji = {
+	一: {
+		studyYear: 1,
+		forTest: [
+			{
+				sentence: [
+					{
+						text: "ひとつ",
+						isYomigana: true,
+					},
+					{
+						text: "だけ",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: true
+			},
+			{
+				sentence: [
+					{
+						text: "はじめ",
+						isYomigana: true,
+					},
+					{
+						text: "のいっぽ",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: true
+			},
+			{
+				sentence: [
+					{
+						text: "いち",
+						isYomigana: true,
+					},
+					{
+						text: "年生",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: false
+			}
+		]
+	},
+	短: {
+		studyYear: 3,
+		forTest: [
+			{
+				sentence: [
+					{
+						text: "みじかい",
+						isYomigana: true,
+					},
+					{
+						text: "文",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: true
+			},
+			{
+				sentence: [
+					{
+						text: "たん",
+						isYomigana: true,
+					},
+					{
+						text: "きょり走",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: false
+			},
+			{
+				sentence: [
+					{
+						text: "たん",
+						isYomigana: true,
+					},
+					{
+						text: "歌",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: false
+			}
+		]
+	},
+	全: {
+		studyYear: 3,
+		forTest: [
+			{
+				sentence: [
+					{
+						text: "クラス",
+						isYomigana: false,
+					},
+					{
+						text: "ぜん",
+						isYomigana: true,
+					},
+					{
+						text: "体",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: false
+			},
+			{
+				sentence: [
+					{
+						text: "すべて",
+						isYomigana: true,
+					},
+					{
+						text: "見える",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: true
+			},
+		]
+	},
+	遊: {
+		studyYear: 3,
+		forTest: [
+			{
+				sentence: [
+					{
+						text: "友だちと",
+						isYomigana: false,
+					},
+					{
+						text: "あそぶ",
+						isYomigana: true,
+					},
+				],
+				hasOkurigana: true
+			},
+			{
+				sentence: [
+					{
+						text: "ゆう",
+						isYomigana: true,
+					},
+					{
+						text: "えん",
+						isYomigana: true,
+					},
+					{
+						text: "ち",
+						isYomigana: true,
+					},
+					{
+						text: "に行く",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: false
+			},
+			{
+				sentence: [
+					{
+						text: "ゆう",
+						isYomigana: true,
+					},
+					{
+						text: "ぐを作る",
+						isYomigana: false,
+					},
+				],
+				hasOkurigana: false
+			}
+		]
+	},
+};
+
+window.addEventListener("load", () => {
+	const qNum = 4;
+	const selecttion = ["一", "遊", "短", "全"];
+	let counter = 0;
+	const random = [];
+	while (counter < qNum) {
+		let num = Math.floor(Math.random() * qNum);
+		while (random.includes(num)) {
+			num = Math.floor(Math.random() * qNum);
+		}
+		random.push(num);
+		counter++;
+	}
+	const randomKanji = [];
+	random.forEach(num => {
+		randomKanji.push(selecttion[num]);
+	});
+	randomKanji.forEach(kanji2 => {
+		const words = kanji[kanji2].forTest;
+		let num = Math.floor(Math.random() * words.length);
+		const template = document.getElementById("questionTemp").content;
+		const clone = template.cloneNode(true);
+		const questionDiv = clone.querySelectorAll(".questionDiv")[0];
+		const sentenceElem = questionDiv.getElementsByClassName("sentence")[0];
+		if (words[num].hasOkurigana) {
+			questionDiv.classList.add("okurigana");
+			words[num].sentence.forEach(text => {
+				if (text.isYomigana) {
+					const yomigana = document.createElement("span");
+					yomigana.classList.add("yomigana");
+					yomigana.textContent = text.text;
+					sentenceElem.appendChild(yomigana);
+				} else {
+					sentenceElem.innerHTML += text.text;
+				}
+			});
+			const blankElem = document.createElement("div");
+			blankElem.classList.add("blank");
+			questionDiv.appendChild(blankElem);
+		} else {
+			questionDiv.classList.add("tango");
+			words[num].sentence.forEach(text => {
+				if (text.isYomigana) {
+					const blankElem = document.createElement("span");
+					blankElem.classList.add("blank");
+					sentenceElem.appendChild(blankElem);
+					const yomigana = document.createElement("span");
+					yomigana.classList.add("yomigana");
+					yomigana.textContent = text.text;
+					blankElem.appendChild(yomigana);
+				} else {
+					sentenceElem.innerHTML += text.text;
+				}
+			});
+		}
+		document.getElementsByClassName("questions")[0].appendChild(clone);
+	});
+
+})
+</script>
